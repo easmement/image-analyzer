@@ -7,6 +7,7 @@ from fastapi import FastAPI
 from image_analyzer import __version__
 from image_analyzer.api import compare, groups, health, images, jobs, libraries, search, settings
 from image_analyzer.core.db import init_db, transaction
+from image_analyzer.core.localhost_only import LocalhostOnlyMiddleware
 from image_analyzer.jobs.runner import jobs as job_manager
 from image_analyzer.jobs.watcher import can_watch, watcher
 
@@ -25,5 +26,6 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="image-analyzer", version=__version__, lifespan=lifespan)
+app.add_middleware(LocalhostOnlyMiddleware)  # DNS-rebinding defence; see core/localhost_only.py
 for module in (health, libraries, jobs, images, groups, compare, search, settings):
     app.include_router(module.router)

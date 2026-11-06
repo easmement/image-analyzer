@@ -13,6 +13,14 @@ from image_analyzer.search.grouping import exact_groups, near_duplicate_groups, 
 Level = Literal["exact", "near_duplicate", "similar"]
 
 router = APIRouter(prefix="/api/groups", tags=["groups"])
+
+FORMULA_PREFIXES = ("=", "+", "-", "@", "\t", "\r")
+
+
+def _cell(value):
+    """Spreadsheet apps run cells starting with = + - @ as formulas, and file names are
+    attacker-controllable, so prefix those with a quote (OWASP CSV-injection guidance)."""
+    return f"'{value}" if isinstance(value, str) and value.startswith(FORMULA_PREFIXES) else value
 Db = Annotated[sqlite3.Connection, Depends(get_db)]
 
 
@@ -34,7 +42,7 @@ def export_groups(conn: Db, library_id: int | None = None, level: Level = "exact
     writer.writerow(["group", "level", "keep", "library_id", "rel_path", "size_bytes", "sha256"])
     for n, group in enumerate(_groups(conn, library_id, level), start=1):
         for img in group.images:
-            writer.writerow([n, group.level, img.id == group.best_id, img.library_id,
-                             img.rel_path, img.size_bytes, img.sha256])
+            writer.writerow([_cell(v) for v in (n, group.level, img.id == group.best_id, img.library_id,
+                                                img.rel_path, img.size_bytes, img.sha256)])
     return Response(buf.getvalue(), media_type="text/csv",
                     headers={"Content-Disposition": 'attachment; filename="duplicates.csv"'})

@@ -15,7 +15,7 @@ from image_analyzer.main import app  # noqa: E402
 
 @pytest.fixture(scope="session")
 def client():
-    with TestClient(app) as c:  # the context manager runs the lifespan (DB init, job manager)
+    with TestClient(app, base_url="http://localhost") as c:  # the context manager runs the lifespan (DB init, job manager)
         yield c
 
 
