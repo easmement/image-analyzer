@@ -1,0 +1,35 @@
+{
+  "name": "frontend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "gen:api": "openapi-typescript http://127.0.0.1:8001/openapi.json -o src/lib/types.gen.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@emotion/cache": "^11.14.0",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/icons-material": "^9.5.0",
+    "@mui/material": "^9.5.0",
+    "@mui/material-nextjs": "^9.5.0",
+    "@tanstack/react-query": "^5.106.1",
+    "next": "16.4.5",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "react-virtuoso": "^4.18.20"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.4.5",
+    "openapi-typescript": "^7.13.0",
+    "typescript": "^5"
+  }
+}
